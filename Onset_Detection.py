@@ -61,29 +61,17 @@ delay_range = delay[min_delay:max_delay]
 peak_delay = delay_range[np.argmax(autocorrelation_range)]
 bpm = 60 / peak_delay
 
-N = len(audio)
-freq = np.fft.rfftfreq(N, d=1/sr)
-fft_mag = np.abs(np.fft.rfft(audio))
-
-plt.figure(figsize=(10,4))
-plt.plot(freq, fft_mag)
-plt.title('Frequency Domain (Magnitude Spectrum)')
-plt.xlabel('Frequency (Hz)')
-plt.ylabel('Magnitude')
-plt.xlim(0, 5000)  # limit to 5 kHz for clarity if you want
-plt.show()
-
 audio, sr = librosa.load('disco.00000.wav', sr=None)
 
-# Compute the Short-Time Fourier Transform (STFT)
-D = librosa.stft(audio, n_fft=1024, hop_length=512)
-S_db = librosa.amplitude_to_db(abs(D), ref=np.max)
+#Compute STFT
+power = librosa.stft(audio, n_fft=1024, hop_length=512)
+spectrogram = librosa.amplitude_to_db(abs(power), ref=np.max)
 
 plt.figure(figsize=(10, 4))
-librosa.display.specshow(S_db, sr=sr, hop_length=512, x_axis='time', y_axis='hz', cmap='magma')
+librosa.display.specshow(spectrogram, sr=sr, hop_length=512, x_axis='time', y_axis='hz', cmap='magma')
 plt.colorbar(format='%+2.0f dB')
 plt.title('Spectrogram (dB)')
-plt.ylim(0, 5000)  # limit frequency axis for clarity (optional)
+plt.ylim(0, 5000)
 plt.tight_layout()
 plt.show()
 
